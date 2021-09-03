@@ -1,0 +1,77 @@
+import { GetStaticProps } from "next"
+import { CoreQueries, ProjectState } from "../../types"
+import { collectTemplates } from "../build/collectors"
+import { resolveAncestry } from "../build/resolveAncestry"
+
+import { TYPE_RESOLUTION_QUERY } from "../build/queries"
+import createGetQueryForType from "../build/createGetQueryForType"
+import { linkify } from "../navigation/utils"
+import createClient from "../graphql/createClient"
+
+const createGetStaticProps = (project: ProjectState): GetStaticProps => async (props) => {
+    const api = createClient(project.projectConfig)
+    const { getPropsManifest, typeAncestryManifest } = project.cacheManifest
+    const page = props?.params?.page ?? []
+    let url
+    if (Array.isArray(page)) {
+        url = page.join(`/`)
+    } else {
+        url = page
+    }
+    
+    url = linkify(url)
+    
+    if (url.match(/\.[^\/]+$/)) {
+        console.log(`Not found:`, url)
+        return {
+            notFound: true
+        }
+    }
+    const templates = Object.keys(collectTemplates())
+
+    const typeResolutionResult: CoreQueries = await api.query(
+        TYPE_RESOLUTION_QUERY,
+        { links: [url] }
+    )
+
+    if (!typeResolutionResult || typeResolutionResult.typesForLinks.length === 0) {
+        return {
+            notFound: true
+        }
+    }
+
+    const data = {
+        query: null,
+        extraProps: null,
+    };
+
+    const result = typeResolutionResult.typesForLinks[0]
+    const { type } = result
+    // @ts-ignore
+    const ancestors = typeAncestryManifest[type] ?? []
+
+    const getQueryForType = createGetQueryForType(project)
+    const query = getQueryForType(type)
+
+    if (query) {
+        data.query = await api.query(query, { link: url }) ?? null
+    }
+
+    const propsKey = resolveAncestry(type, ancestors, Object.keys(getPropsManifest))
+    // @ts-ignore
+    const propsFunc = propsKey ? (getPropsManifest[propsKey] ?? null) : null
+    if (propsFunc) {
+        data.extraProps = await propsFunc(data.query)
+    }
+
+    const componentProps = {
+        props: {
+            data,
+            type,
+            templates,
+        },
+    }
+    return componentProps
+}
+
+export default createGetStaticProps
