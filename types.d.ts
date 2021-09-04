@@ -1,5 +1,9 @@
 import React from "react"
 
+export type StringMap = {
+    [key: string]: string
+}
+
 export type StaticBuildPayload = {
   typeAncestry: Array<TypeAncestry>
   links: Array<StaticBuildLink>
@@ -65,7 +69,7 @@ export interface ProjectConfig {
         ignore: Array<string>
       }
   
-      baseURL: () => string
+      baseURL: string
       
       client: () => ClientConfig
 }

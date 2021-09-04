@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 // @ts-ignore
 import inquirer from 'inquirer'
 import chalk from 'chalk'

@@ -1,5 +1,6 @@
 
 export { default as createGetStaticProps } from './bootstrap/createGetStaticProps'
+export { default as createGetStaticPaths } from './bootstrap/createGetStaticPaths'
 export { default as createPage } from './bootstrap/createPage'
 
 export { default as cacheElementalBlocks } from './prebuild/cacheElementalBlocks'
@@ -7,6 +8,9 @@ export { default as cacheGetProps } from './prebuild/cacheGetProps'
 export { default as cacheQueryManifest } from './prebuild/cacheQueryManifest'
 export { default as cacheStaticQueries } from './prebuild/cacheStaticQueries'
 export { default as cacheTypeAncestry } from './prebuild/cacheTypeAncestry'
+export { default as cacheTemplateManifest } from './prebuild/cacheTemplateManifest'
+
+export { default as defaultPluraliser } from './build/pluraliser'
 
 export { default as cache } from './cache/cache'
 
@@ -41,3 +45,4 @@ export {
 }
 export { default as useStaticQuery } from './staticQuery/useStaticQuery'
 export { default as usePageContext } from './pageContext/usePageContext'
+export { PageContext, PageContextValue } from './pageContext/PageContext'
