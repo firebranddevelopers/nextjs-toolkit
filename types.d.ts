@@ -37,7 +37,7 @@ export type TemplateManifest = {
 }
 
 export type GetPropsManifest = {
-    [key: string]: function
+    [key: string]: () => Promise<any>
 }
 
 export type QueryManifest = {
