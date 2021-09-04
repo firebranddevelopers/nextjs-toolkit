@@ -7,12 +7,6 @@
   "engines": {
     "node": ">= 14"
   },
-  "bin": {
-    "buildManifest": "./lib-es5/bin/buildManifest.js",
-    "scaffoldBlocks": "./lib-es5/bin/scaffoldBlocks.js",
-    "scaffoldPages": "./lib-es5/bin/scaffoldPages.js",
-    "setup": "./lib-es5/bin/setup.js"
-  },
   "scripts": {
     "build": "tsc && tsc -t ES5 --outDir lib-es5",
     "format": "prettier --write src/**/*.{ts,tsx}",
