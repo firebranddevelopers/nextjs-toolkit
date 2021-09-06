@@ -7,6 +7,9 @@
   "engines": {
     "node": ">= 14"
   },
+  "bin": {
+    "nextjs-toolkit": "./lib-es5/bin/nextjs-toolkit.js"
+  },
   "scripts": {
     "build": "tsc && tsc -t ES5 --outDir lib-es5",
     "format": "prettier --write src/**/*.{ts,tsx}",
