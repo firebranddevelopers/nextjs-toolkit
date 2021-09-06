@@ -1,28 +1,35 @@
 #!/usr/bin/env node
 
-import { resolve } from "path"
+import dotenv from "dotenv"
+import path from "path"
 import { ProjectConfig } from "../../types"
 import { transpileModule } from "typescript"
 import fs from "fs"
 
 ;(async () => {
-  const configFile =
-    process.argv[2] ?? resolve(`${__dirname}../../ss.config.ts`)
-
-  if (!fs.existsSync(configFile)) {
-    throw new Error(`Config file ${configFile} does not exist`)
+  let configFilePath;
+  for (const p of module.paths) {
+    const candidate = path.join(path.dirname(p), `ss.config.ts`)
+    if (fs.existsSync(candidate)) {
+      configFilePath = candidate
+      break;
+    }
+  }
+  if (!configFilePath) {
+    throw new Error(`Could not find a ss.config.ts file in ${JSON.stringify(module.paths)}`)
   }
 
-  const tsSource = fs.readFileSync(configFile, { encoding: `utf8` })
+  const tsSource = fs.readFileSync(configFilePath, { encoding: `utf8` })
   const jsSource = transpileModule(tsSource, {
     compilerOptions: {
       esModuleInterop: true,
       skipLibCheck: true,
     }
   })
+  const envPath = path.join(path.dirname(configFilePath), `.env`)
+  dotenv.config({ path: envPath })
 
-  const parsed = eval(jsSource.outputText)
-  const ssConfig: ProjectConfig = parsed.default
+  const ssConfig: ProjectConfig = eval(jsSource.outputText)
 
   const commands: { [command: string]: () => Promise<any> } = {
     "build-manifest": () =>
@@ -34,7 +41,7 @@ import fs from "fs"
     "setup": () => import("./setup").then(i => i.setup()),
   }
 
-  const command = commands[process.argv[1]] ?? null
+  const command = commands[process.argv[2]] ?? null
 
   if (!command) {
     console.log(`
