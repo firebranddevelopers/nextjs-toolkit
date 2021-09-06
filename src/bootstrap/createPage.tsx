@@ -15,7 +15,7 @@ const createPage =
     ({ cacheManifest }: ProjectState):
     React.FC<Props> => ({ data, type, templates }: Props) => {
         // @ts-ignore
-        const ancestors = cacheManifest.typeAncestryManifest[type] ?? []
+        const ancestors = cacheManifest.typeAncestry[type] ?? []
         const key = resolveAncestry(type, ancestors, templates)
         // @ts-ignore
         const Component = key ? cacheManifest.templateManifest[key] : null

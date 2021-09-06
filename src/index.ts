@@ -46,3 +46,5 @@ export {
 export { default as useStaticQuery } from './staticQuery/useStaticQuery'
 export { default as usePageContext } from './pageContext/usePageContext'
 export { PageContext, PageContextValue } from './pageContext/PageContext'
+
+export { ProjectState } from "../types"

@@ -1,12 +1,22 @@
-// @ts-ignore
+/// @ts-ignore
 import Cache from "file-system-cache"
 import fs from "fs"
+import path from "path"
 
-const cacheDir = process.env.NEXT_CACHE_DIR ?? `.cache`
+let cacheDir = path.resolve(`${__dirname}../../.cache`)
 
-const inst = Cache({
+let inst = Cache({
     basePath: `${process.cwd()}/${cacheDir}`,
 })
+
+const init = (dir: string) => {
+    clear()
+    cacheDir = dir
+    clear()
+    inst = Cache({
+        basePath: dir
+    })
+}
 
 export const save = (key: string, content: any): void => {
     inst.setSync(key, content)
@@ -30,8 +40,8 @@ export const loadJSON = (key: string): any | null => {
 }
 
 export const clear = async (): Promise<void> => {
-    fs.rmSync(`${process.cwd()}/${cacheDir}`, { recursive: true, force: true })
-    fs.mkdirSync(`${process.cwd()}/${cacheDir}`)
+    fs.rmSync(cacheDir, { recursive: true, force: true })
+    fs.mkdirSync(cacheDir)
 }
 
 export const writeFile = (name: string, content: string): void => {
@@ -52,5 +62,6 @@ export default {
     readFile,
     clear,
     writeFile,
-    dir
+    dir,
+    init
 }

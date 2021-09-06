@@ -10,7 +10,7 @@ import createClient from "../graphql/createClient"
 
 const createGetStaticProps = (project: ProjectState): GetStaticProps => async (props) => {
     const api = createClient(project.projectConfig)
-    const { getPropsManifest, typeAncestryManifest } = project.cacheManifest
+    const { getPropsManifest, typeAncestry } = project.cacheManifest
     const page = props?.params?.page ?? []
     let url
     if (Array.isArray(page)) {
@@ -48,7 +48,7 @@ const createGetStaticProps = (project: ProjectState): GetStaticProps => async (p
     const result = typeResolutionResult.typesForLinks[0]
     const { type } = result
     // @ts-ignore
-    const ancestors = typeAncestryManifest[type] ?? []
+    const ancestors = typeAncestry[type] ?? []
 
     const getQueryForType = createGetQueryForType(project)
     const query = getQueryForType(type)

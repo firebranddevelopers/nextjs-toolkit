@@ -18,6 +18,8 @@ console.log(`
   Ready? Let's do it! 🎉
 `)
 
+const projectDir = path.dirname(process.argv[2])
+
 const previewKey = crypto.randomBytes(256).toString(`base64`).substring(0, 64)
 
 const questions = [
@@ -110,8 +112,8 @@ inquirer
   .prompt(questions)
   .then(({ baseUrl, apiKey }: any) => {
     console.log("Writing env file...")
-    const configFilePath = path.resolve(__dirname, "..", ".env")
-    const codegenFilePath = path.resolve(__dirname, "..", "codegen.yml")
+    const configFilePath = path.join(projectDir, ".env")
+    const codegenFilePath = path.join(projectDir, "codegen.yml")
     writeFileSync(
       configFilePath,
       `SILVERSTRIPE_BASE_URL = '${baseUrl}'

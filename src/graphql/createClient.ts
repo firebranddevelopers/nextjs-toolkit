@@ -20,7 +20,6 @@ export interface Variables {
 }
 
 const createClient = (projectConfig: ProjectConfig) => {
-
     const warm = (query: string, variables: Variables, result: unknown) => {
         const key = getCacheKey(query, variables)
         if (!key) {

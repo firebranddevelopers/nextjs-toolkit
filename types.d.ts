@@ -37,7 +37,7 @@ export type TemplateManifest = {
 }
 
 export type GetPropsManifest = {
-    [key: string]: () => Promise<any>
+    [key: string]: (query: string | null) => Promise<any>
 }
 
 export type QueryManifest = {
@@ -77,7 +77,7 @@ export interface ProjectConfig {
 export interface CacheManifest {
     templateManifest: TemplateManifest
     getPropsManifest: GetPropsManifest
-    typeAncestryManifest: TypeAncestryManifest
+    typeAncestry: TypeAncestryManifest
     queryManifest: QueryManifest
 }
 

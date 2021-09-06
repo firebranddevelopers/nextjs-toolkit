@@ -6,18 +6,25 @@ export default async (): Promise<void> => {
     const output = [
         `/** GENERTATED CODE -- DO NOT MODIFY **/`,
         ``,
-        `module.exports = {`
-    ]        
+    ]
+    const vars: Array<string> = []        
     
-    const cacheFiles = glob.sync(`${cache.dir()}/*.js`)
+    const cacheFiles = glob.sync(`${cache.dir()}/{*.js,*.json}`, {
+        dot: true,
+    })
     cacheFiles.forEach(absPath => {
         const base = basename(absPath)
         const canonicalName = base.match(/^\.([A-Za-z_-]+)/)
-        if (canonicalName) {
-            output.push(`\t${canonicalName}: require("./${base}"),`)
+        if (!canonicalName) {
+            return            
         }
+        const varName = canonicalName[1]
+        output.push(`import ${varName} from "./${base}"`)
+        vars.push(varName)
     })
-
+    output.push(``)
+    output.push(`export default {`)
+    output.push(vars.join(",\n"))
     output.push(`}`)
     cache.writeFile(`.__cacheManifest.js`,output.join("\n"))
 
