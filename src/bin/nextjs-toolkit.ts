@@ -34,7 +34,7 @@ import fs from "fs"
   const commands: { [command: string]: () => Promise<any> } = {
     "build-manifest": () =>
       import("./buildManifest").then(i => i.buildManifest(ssConfig)),
-    "scafffold-pages": () =>
+    "scaffold-pages": () =>
       import("./scaffoldPages").then(i => i.scaffoldPages(ssConfig)),
     "scaffold-blocks": () =>
       import("./scaffoldBlocks").then(i => i.scaffoldBlocks(ssConfig)),
