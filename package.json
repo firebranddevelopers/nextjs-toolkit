@@ -2,16 +2,16 @@
   "name": "@silverstripe/nextjs-toolkit",
   "version": "0.0.7",
   "description": "Tools for building NextJS websites powered by a Silverstripe CMS data source",
-  "main": "index.js",
+  "main": "client.js",
   "types": "lib-es5/index.d.ts",
   "engines": {
     "node": ">= 14"
   },
   "bin": {
-    "nextjs-toolkit": "./lib-es5/bin/nextjs-toolkit.js"
+    "nextjs-toolkit": "./lib-es5/server/bin/nextjs-toolkit.js"
   },
   "scripts": {
-    "build": "tsc && tsc -t ES5 --outDir lib-es5  && chmod +x lib-es5/bin/nextjs-toolkit.js",
+    "build": "tsc && tsc -t ES5 --outDir lib-es5  && chmod +x lib-es5/server/bin/nextjs-toolkit.js",
     "format": "prettier --write src/**/*.{ts,tsx}",
     "watch": "tsc --watch & tsc && tsc -t ES5 --outDir lib-es5 --watch",
     "publish-local": "npm run prepublishOnly && npm version prerelease --no-git-tag-version && npm pack && mkdirp .tarballs && mv gatsby-source-silverstripe-*.tgz .tarballs/ && echo 'published to .tarballs/'",
@@ -35,7 +35,8 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "gql-compress": "^2.0.24",
-    "glob": "^7.1.7"
+    "glob": "^7.1.7",
+    "crypto-browserify": "^3.12.0"
   },
   "peerDependencies": {
     "next": "^11.0"
