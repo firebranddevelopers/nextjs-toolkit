@@ -3,6 +3,8 @@
 import path from "path"
 import fs from "fs"
 import createClient from "../graphql/createClient"
+import getLibraryDir from "@silverstripe/nextjs-toolkit/src/utils/getLibraryDir"
+import getProjectDir from "@silverstripe/nextjs-toolkit/src/utils/getProjectDir"
 import { ProjectConfig } from "../../types"
 
 interface FragmentResult {
@@ -24,25 +26,34 @@ const variables = {
   includeBase: true,
 }
 
+const libraryDir = getLibraryDir()
+if (!libraryDir) {
+  throw new Error(`Could not find package dir at ${__dirname}`)
+}
+const projectDir = getProjectDir()
+if (!projectDir) {
+  throw new Error(`Could not find project dir at ${__dirname}`)
+}
+
 export const scaffoldBlocks = (ssConfig: ProjectConfig) => {
   const elementalFragmentPath =
     ssConfig.elemental?.fragmentsPath ?? `fragments/elemental/elements`
   const elementalComponentsPath =
     ssConfig.elemental?.componentsPath ?? `components/elemental`
 
-  const absFragmentsPath = path.join(process.cwd(), `src/fragments`)
+  const absFragmentsPath = path.join(projectDir, `src/fragments`)
   const absElementalFragmentsPath = path.join(
-    process.cwd(),
+    projectDir,
     `src/${elementalFragmentPath}`
   )
   const absElementalComponentsPath = path.join(
-    process.cwd(),
+    projectDir,
     `src/${elementalComponentsPath}`
   )
 
   const fragmentTemplatePath = path.join(
-    process.cwd(),
-    `lib/templates/elements.template`
+    libraryDir,
+    `src/templates/elements.template`
   )
   if (!fs.existsSync(fragmentTemplatePath)) {
     throw new Error(`Template ${fragmentTemplatePath} does not exist`)
@@ -52,8 +63,8 @@ export const scaffoldBlocks = (ssConfig: ProjectConfig) => {
   })
 
   const componentTemplatePath = path.join(
-    process.cwd(),
-    `lib/templates/block.template`
+    libraryDir,
+    `src/templates/block.template`
   )
   if (!fs.existsSync(componentTemplatePath)) {
     throw new Error(`Template ${componentTemplatePath} does not exist`)
@@ -64,7 +75,7 @@ export const scaffoldBlocks = (ssConfig: ProjectConfig) => {
 
   const schemaPath = path.relative(
     absElementalComponentsPath,
-    `${process.cwd()}/graphql.ts`
+    `${projectDir}/graphql.ts`
   )
 
   const api = createClient(ssConfig)
@@ -87,7 +98,7 @@ export const scaffoldBlocks = (ssConfig: ProjectConfig) => {
       `${absFragmentsPath}/BaseFields.graphql`
     )
 
-    const imports: Array<string> = [`#import "${baseFieldsPath}`]
+    const imports: Array<string> = [`#import "${baseFieldsPath}"`]
     const inlineFragments: Array<string> = [`\t...BaseFields`]
 
     result.generateFragments.forEach((result: FragmentResult) => {

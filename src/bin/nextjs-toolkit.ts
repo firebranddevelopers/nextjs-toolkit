@@ -1,35 +1,9 @@
 #!/usr/bin/env node
 
-import dotenv from "dotenv"
-import path from "path"
-import { ProjectConfig } from "../../types"
-import { transpileModule } from "typescript"
-import fs from "fs"
+import { bootProjectConfig } from "../utils"
 
 ;(async () => {
-  let configFilePath;
-  for (const p of module.paths) {
-    const candidate = path.join(path.dirname(p), `ss.config.ts`)
-    if (fs.existsSync(candidate)) {
-      configFilePath = candidate
-      break;
-    }
-  }
-  if (!configFilePath) {
-    throw new Error(`Could not find a ss.config.ts file in ${JSON.stringify(module.paths)}`)
-  }
-
-  const tsSource = fs.readFileSync(configFilePath, { encoding: `utf8` })
-  const jsSource = transpileModule(tsSource, {
-    compilerOptions: {
-      esModuleInterop: true,
-      skipLibCheck: true,
-    }
-  })
-  const envPath = path.join(path.dirname(configFilePath), `.env`)
-  dotenv.config({ path: envPath })
-
-  const ssConfig: ProjectConfig = eval(jsSource.outputText)
+  const ssConfig = bootProjectConfig()
 
   const commands: { [command: string]: () => Promise<any> } = {
     "build-manifest": () =>

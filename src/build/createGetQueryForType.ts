@@ -1,13 +1,18 @@
-import { resolveAncestry } from "./resolveAncestry"
-import {  ProjectState } from "../../types"
+import resolveAncestry from "./resolveAncestry"
+import { ProjectState } from "../../types"
 
-const createGetQueryForType = ({ cacheManifest }: ProjectState) => (type: string): string | null => {
-    const {queryManifest, typeAncestry} = cacheManifest
+const createGetQueryForType =
+  ({ cacheManifest: { queryManifest, typeAncestry } }: ProjectState) =>
+  (type: string): string | null => {
     // @ts-ignore
     const ancestors = typeAncestry[type] ?? []
-    const queriesKey = resolveAncestry(type, ancestors, Object.keys(queryManifest))
+    const queriesKey = resolveAncestry(
+      type,
+      ancestors,
+      Object.keys(queryManifest)
+    )
     // @ts-ignore
-    return queriesKey ? (QUERIES[queriesKey]?.source ?? null) : null
-}
+    return queriesKey ? queryManifest[queriesKey]?.source ?? null : null
+  }
 
 export default createGetQueryForType

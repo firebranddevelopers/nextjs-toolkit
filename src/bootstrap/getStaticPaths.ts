@@ -1,5 +1,5 @@
 import { GetStaticPaths } from "next"
-import { CoreQueries, ProjectState } from "../../types"
+import { CoreQueries } from "../../types"
 import { STATIC_PAYLOAD_QUERY, TYPE_RESOLUTION_QUERY } from "../build/queries";
 import createGetQueryForType from "../build/createGetQueryForType";
 import createBulkQuery from "../build/createBulkQuery";
@@ -7,8 +7,11 @@ import { getQueryName, hasTopLevelField } from "../graphql/graphqlUtils";
 import { parse } from "graphql"
 import { linkify } from "../navigation/utils";
 import createClient from "../graphql/createClient";
+import { requireProject } from "../utils/project"
 
-export const createGetStaticPaths = (project: ProjectState): GetStaticPaths => async () => {
+
+export const getStaticPaths: GetStaticPaths = async () => {
+    const project = requireProject()
     const api = createClient(project.projectConfig)
     const staticPayloadResult: CoreQueries = await api.query(
         STATIC_PAYLOAD_QUERY
@@ -34,9 +37,8 @@ export const createGetStaticPaths = (project: ProjectState): GetStaticPaths => a
 
     const typeToLinks = new Map<string, Set<string>>()
     const typeToQuery = new Map<string, string>()
-
     const getQueryForType = createGetQueryForType(project)
-
+      
     typeResolutionResult.typesForLinks.forEach(result => {
         api.warm(
             TYPE_RESOLUTION_QUERY,
@@ -59,7 +61,6 @@ export const createGetStaticPaths = (project: ProjectState): GetStaticPaths => a
     })
 
     // Bulk query caching
-    
     const bulkQuery = createBulkQuery(project)
     for (let [type, links] of typeToLinks.entries()) {
         const singleQuery = typeToQuery.get(type)
@@ -104,4 +105,4 @@ export const createGetStaticPaths = (project: ProjectState): GetStaticPaths => a
     }
 }
 
-export default createGetStaticPaths
+export default getStaticPaths

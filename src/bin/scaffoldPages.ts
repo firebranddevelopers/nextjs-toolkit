@@ -4,6 +4,9 @@ import path from "path"
 import fs from "fs"
 import createClient from "../graphql/createClient"
 import { ProjectConfig } from "../../types"
+import getLibraryDir from "../utils/getLibraryDir"
+import getProjectDir from "../utils/getProjectDir"
+import glob from "glob"
 
 interface FragmentResult {
   type: string
@@ -23,22 +26,48 @@ const variables = {
   baseClass: "Page",
   includeBase: true,
 }
+const libraryDir = getLibraryDir()
+if (!libraryDir) {
+  throw new Error(`Could not find package dir at ${__dirname}`)
+}
+const projectDir = getProjectDir()
+if (!projectDir) {
+  throw new Error(`Could not find project dir at ${__dirname}`)
+}
+
+const templatePath = (name: string) => (
+  path.join(libraryDir, `src/templates/${name}.template`)
+)
 
 export const scaffoldPages = (ssConfig: ProjectConfig) => {
   const ignore = ssConfig.page?.ignore ?? []
-  const absComponentsPath = path.join(process.cwd(), `src/templates`)
-  const absPageTemplatePath = path.join(
-    process.cwd(),
-    `lib/templates/page.template`
-  )
-  const absQueryPath = path.join(
-    process.cwd(),
-    `lib/templates/pageQuery.template`
-  )
-  const absElementalPageTemplatePath = path.join(
-    process.cwd(),
-    `lib/templates/elementalPage.template`
-  )
+  const absComponentsPath = path.resolve(projectDir, `src/templates`)
+  
+  let elementalAreaPath: string
+  if (ssConfig.elemental.enabled) {
+    const absElementalPath = path.resolve(absComponentsPath, `../components/elements`)
+    fs.mkdirSync(absElementalPath, { recursive: true })
+    const elementalPageSrc = fs.readFileSync(
+      templatePath(`elementalArea`),
+      { encoding: `utf8` }
+    )
+    const existing = glob.sync(
+      `${projectDir}/**/ElementalArea{.tsx,.jsx}`,
+      { absolute: true }
+    )
+    if (!existing.length) {
+      elementalAreaPath = path.join(absElementalPath, `ElementalArea.tsx`)
+      fs.writeFileSync(elementalAreaPath, elementalPageSrc)      
+    } else {
+      console.log(`ElementalArea already exists. Skipping.`)
+      elementalAreaPath = existing[0]
+    }
+
+  }
+  
+  const absPageTemplatePath = templatePath(`page`)
+  const absQueryPath = templatePath(`pageQuery`)
+  const absElementalPageTemplatePath = templatePath(`elementalPage`)
 
   const requiredTemplates = [
     absPageTemplatePath,
@@ -74,9 +103,20 @@ export const scaffoldPages = (ssConfig: ProjectConfig) => {
 
       // If no component exists for this block, create it
       if (!fs.existsSync(componentPath)) {
-        const code = templateContents
+        let code = templateContents
           .replace(/<%templateName%>/g, result.type)
           .replace(/<%queryName%>/g, queryName)
+        if (elementalAreaPath) {
+          code = code.replace(
+            /<%elementalAreaPath%>/g,
+            path.relative(
+              path.dirname(componentPath),
+              // remove extension
+              elementalAreaPath.split(`.`).slice(0, -1).join(`.`)
+
+            )
+          )
+        }
         fs.writeFileSync(componentPath, code)
 
         console.log(`Generated new component for ${result.type}`)

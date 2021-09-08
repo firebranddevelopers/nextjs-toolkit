@@ -10,9 +10,11 @@ let inst = Cache({
 })
 
 const init = (dir: string) => {
+    if (dir === cacheDir) {
+        return
+    }
     clear()
-    cacheDir = dir
-    clear()
+    cacheDir = dir    
     inst = Cache({
         basePath: dir
     })

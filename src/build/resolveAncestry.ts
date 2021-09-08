@@ -1,4 +1,4 @@
-export const resolveAncestry = (
+const resolveAncestry = (
     type: string,
     ancestors: Array<string>,
     options: Array<string>
@@ -12,3 +12,5 @@ export const resolveAncestry = (
 
     return null
 }
+
+export default resolveAncestry

@@ -1,14 +1,18 @@
 import { GetStaticProps } from "next"
-import { CoreQueries, ProjectState } from "../../types"
+import { CoreQueries } from "../../types"
 import { collectTemplates } from "../build/collectors"
-import { resolveAncestry } from "../build/resolveAncestry"
+import resolveAncestry from "../build/resolveAncestry"
 
 import { TYPE_RESOLUTION_QUERY } from "../build/queries"
 import createGetQueryForType from "../build/createGetQueryForType"
 import { linkify } from "../navigation/utils"
 import createClient from "../graphql/createClient"
+import { requireProject } from "../utils/project"
 
-const createGetStaticProps = (project: ProjectState): GetStaticProps => async (props) => {
+
+const getStaticProps: GetStaticProps = async (props) => {
+    const project = requireProject()
+    const getQueryForType = createGetQueryForType(project)
     const api = createClient(project.projectConfig)
     const { getPropsManifest, typeAncestry } = project.cacheManifest
     const page = props?.params?.page ?? []
@@ -50,7 +54,6 @@ const createGetStaticProps = (project: ProjectState): GetStaticProps => async (p
     // @ts-ignore
     const ancestors = typeAncestry[type] ?? []
 
-    const getQueryForType = createGetQueryForType(project)
     const query = getQueryForType(type)
 
     if (query) {
@@ -74,4 +77,4 @@ const createGetStaticProps = (project: ProjectState): GetStaticProps => async (p
     return componentProps
 }
 
-export default createGetStaticProps
+export default getStaticProps

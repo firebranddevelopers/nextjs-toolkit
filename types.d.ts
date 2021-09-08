@@ -75,14 +75,13 @@ export interface ProjectConfig {
 }
 
 export interface CacheManifest {
-    templateManifest: TemplateManifest
-    getPropsManifest: GetPropsManifest
-    typeAncestry: TypeAncestryManifest
-    queryManifest: QueryManifest
+  templateManifest: TemplateManifest
+  getPropsManifest: GetPropsManifest
+  typeAncestry: TypeAncestryManifest
+  queryManifest: QueryManifest
 }
 
-
 export interface ProjectState {
-    projectConfig: ProjectConfig
     cacheManifest: CacheManifest
+    projectConfig: ProjectConfig
 }

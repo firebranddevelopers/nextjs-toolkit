@@ -26,7 +26,7 @@ export default async (): Promise<void> => {
     output.push(`export default {`)
     output.push(vars.join(",\n"))
     output.push(`}`)
-    cache.writeFile(`.__cacheManifest.js`,output.join("\n"))
+    cache.writeFile(`index.js`,output.join("\n"))
 
     return Promise.resolve()
 }
