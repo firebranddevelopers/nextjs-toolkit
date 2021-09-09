@@ -4,7 +4,7 @@ import React from "react"
 //export type PageContextValue = Query["readOnePage"]
 
 export type PageContextValue = {
-    title: string
+    title?: string | null
 } | null
 
 export const PageContext = React.createContext<PageContextValue>(null)
