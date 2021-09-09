@@ -1,6 +1,6 @@
 import { useContext } from "react"
 import { StaticQueryContext } from "./StaticQueryContext"
-import { getCacheKey } from "../../common/getCacheKey"
+import getCacheKey from "../utils/getCacheKey"
 
 const useStaticQuery = (gqlQuery: string): any => {
     const staticQueries = useContext(StaticQueryContext)

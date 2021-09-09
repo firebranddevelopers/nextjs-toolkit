@@ -1,7 +1,7 @@
 // import { PageInterface } from "../../graphql"
 // import { PageUnion } from "../../types"
 
-import linkify from "../../common/linkify"
+import linkify from "../utils/linkify"
 
 type PageUnion = {
     title: string

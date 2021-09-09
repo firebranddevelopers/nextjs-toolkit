@@ -1,6 +1,7 @@
 import React from "react"
-import resolveAncestry from "../../common/resolveAncestry"
-import { requireProject } from "../../common/project"
+import resolveAncestry from "../utils/resolveAncestry"
+import { initProject, requireProject } from "../utils/project"
+import { ProjectState } from "../../types"
 
 interface Props {
     data: {
@@ -10,7 +11,9 @@ interface Props {
     templates: Array<string>
 }
 
-const Page = ({ data, type, templates }: Props): JSX.Element => {
+const Page = (project: ProjectState) => {
+    initProject(project)
+    return ({ data, type, templates }: Props): JSX.Element => {
         const { typeAncestry, templateManifest } = requireProject().cacheManifest
         // @ts-ignore    
         const ancestors = typeAncestry[type] ?? []
@@ -22,6 +25,7 @@ const Page = ({ data, type, templates }: Props): JSX.Element => {
         }
         // @ts-ignore
         return <Component {...data} />
+    }
 }
 
 export default Page

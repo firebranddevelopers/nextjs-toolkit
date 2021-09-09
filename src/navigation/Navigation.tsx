@@ -1,7 +1,7 @@
 import React from "react"
 import { useRouter } from "next/dist/client/router"
 import { hasChildren, isSection, getChildren } from "./utils"
-import linkify from "../../common/linkify"
+import linkify from "../utils/linkify"
 
 //import { PageUnion } from "../../types"
 //import { PageInterface } from "../../graphql"

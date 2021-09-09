@@ -2,6 +2,7 @@ import { getOperationName } from "./graphqlUtils";
 import { parse } from "graphql"
 // @ts-ignore
 import compress from "gql-compress"
+// @ts-ignore
 import crypto from "crypto-browserify"
 
 // Remove once we figure out how to include types.d.ts in the prebuild
@@ -9,7 +10,7 @@ interface StringMap {
     [key: string]: string
 }
 
-export function getCacheKey(query: string, variables: StringMap = {}): string | null {
+const getCacheKey = (query: string, variables: StringMap = {}): string | null => {
     const document = parse(query)
     const operationName = getOperationName(document) ?? ``
     const md5sum = crypto.createHash(`md5`)
@@ -19,3 +20,5 @@ export function getCacheKey(query: string, variables: StringMap = {}): string | 
 
     return `${operationName}--${hash}`
 }
+
+export default getCacheKey
