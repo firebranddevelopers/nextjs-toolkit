@@ -1,7 +1,7 @@
 import React from "react"
 
 export interface StaticQueryContextValue {
-  [key: string]: unknown
+  [key: string]: any
 }
 
 export const StaticQueryContext = React.createContext<StaticQueryContextValue | null>(null)

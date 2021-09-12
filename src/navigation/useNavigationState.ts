@@ -1,38 +1,16 @@
-//import { PageInterface } from "../../graphql"
-//import { PageUnion } from "../../types"
-import { isLevel, hasChildren, inSection, getChildren, getPeers } from "./utils"
+import createNavigationUtils from "./utils"
+import { PageInterface } from "./utils"
 
-type PageUnion = {
-    title: string
-    menuTitle: string
-    id: string
-    link: string
-    navParent: PageUnion
-    navChildren: {
-        nodes: Array<PageUnion>
-    }
-}
-type PageInterface = {
-    title: string
-    menuTitle: string
-    id: string
-    link: string
-    navParent: PageInterface
-    navChildren: {
-        nodes: Array<PageInterface>
-    }
-}
-
-export interface NavigationTools {
+export interface NavigationTools<T> {
     isLevel: (level: number) => boolean
     hasChildren: () => boolean
-    getChildren: () => Array<PageUnion>
+    getChildren: () => Array<T>
     inSection: (section: string) => boolean
-    getPeers:() => Array<PageUnion>
+    getPeers:() => Array<T>
 }
 
-const useNavigationState = <T extends PageInterface>(page: T): NavigationTools => {
-
+const useNavigationState = <T extends PageInterface>(page: T): NavigationTools<T> => {
+    const { isLevel, hasChildren, inSection, getChildren, getPeers } = createNavigationUtils<T>()
     return {
         isLevel(level: number) {
             return isLevel(page, level)

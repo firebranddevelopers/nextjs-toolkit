@@ -1,34 +1,11 @@
 import React from "react"
 import { useRouter } from "next/dist/client/router"
-import { hasChildren, isSection, getChildren } from "./utils"
+import createNavigationUtils from "./utils"
+import { PageInterface } from "./utils"
 import linkify from "../utils/linkify"
 
-//import { PageUnion } from "../../types"
-//import { PageInterface } from "../../graphql"
 
-type PageUnion = {
-    title: string
-    menuTitle: string
-    id: string
-    link: string
-    navParent: PageUnion
-    navChildren: {
-        nodes: Array<PageUnion>
-    }
-}
-type PageInterface = {
-    title: string
-    menuTitle: string
-    id: string
-    link: string
-    navParent: PageInterface
-    navChildren: {
-        nodes: Array<PageInterface>
-    }
-}
-
-
-export interface NavState {
+export interface NavState<T> {
     current: boolean
     linkingMode: "current" | "section" | "link"
     level: number
@@ -39,23 +16,25 @@ export interface NavState {
     pos: number
     key: number | string
     hasChildren: boolean
-    children: Array<PageUnion>
+    children: Array<T>
 }
 
-interface Props<T> {
+interface Props<T extends PageInterface> {
     items: Array<T>
-    children: (child: PageUnion, state: NavState) => React.ReactNode
+    children: (child: T, state: NavState<T>) => React.ReactNode
 }
 
 const Navigation = <T extends PageInterface>({ items, children }: Props<T>): React.ReactElement => {
-    const { asPath } = useRouter()
-    
+    const asPath = `foo`
+    console.log(useRouter())
+    const { isSection, hasChildren, getChildren } = createNavigationUtils<T>()
+
     const navItems = items.map((page, i) => {
         page.link = linkify(page.link)
         const current = page.link === asPath
         const section = isSection(page, asPath)
         const pos = i + 1
-        const state: NavState = {
+        const state: NavState<T> = {
             current, 
             linkingMode: current ? `current` : (section ? `section` : `link`),
             pos: pos + 1,

@@ -1,63 +1,74 @@
-// import { PageInterface } from "../../graphql"
-// import { PageUnion } from "../../types"
-
 import linkify from "../utils/linkify"
-
-type PageUnion = {
-    title: string
-    menuTitle: string
-    id: string
-    link: string
-    navParent: PageUnion
-    navChildren: {
-        nodes: Array<PageUnion>
-    }
-}
-type PageInterface = {
-    title: string
-    menuTitle: string
-    id: string
-    link: string
-    navParent: PageInterface
-    navChildren: {
-        nodes: Array<PageInterface>
-    }
-}
 
 type Linkable = { link: string }
 
-export const getLevel = <T extends Linkable>(page: T): number => {
+interface Connection<T> {
+  nodes: Array<T>
+}
+
+export interface PageInterface {
+  id: string
+  title?: string | null
+  link: string
+  navChildren: Connection<this>
+  navParent?: this | null
+}
+
+interface NavUtils<T extends PageInterface> {
+  getLevel<T extends Linkable>(page: T): number
+  isLevel<T extends Linkable>(page: T, level: number): boolean
+  getChildren(page: T): Array<T>
+  getPeers(page: T): Array<T>
+  hasChildren(page: T): boolean
+  inSection<T extends Linkable>(page: T, section: string): boolean
+  isSection<T extends Linkable>(page: T, section: string): boolean
+}
+
+function createNavigationUtils<T extends PageInterface>(): NavUtils<T> {
+  const getLevel = <T extends Linkable>(page: T) => {
     if (!page.link) {
-        return 0
+      return 0
     }
     return page.link.split(`/`).length
-}
+  }
 
-export const isLevel = <T extends Linkable>(page: T, level: number): boolean => {
+  const isLevel = <T extends Linkable>(page: T, level: number) => {
     return getLevel(page) >= level
-}
+  }
 
-export const getChildren = (page: PageInterface): Array<PageUnion> => {    
+  const getChildren = (page: T) => {
     const children = page.navChildren?.nodes ?? []
     return children.map(child => ({
-        ...child,
-        link: linkify(child.link)
+      ...child,
+      link: linkify(child.link),
     }))
-}
+  }
 
-export const getPeers = (page: PageInterface): Array<PageUnion> => {
+  const getPeers = (page: T) => {
     return page.navParent?.navChildren?.nodes ?? []
-}
+  }
 
-export const hasChildren = (page: PageInterface): boolean => {
+  const hasChildren = (page: T) => {
     return getChildren(page).length > 0
-}
+  }
 
-export const inSection = <T extends Linkable >(page: T, section: string): boolean => {
+  const inSection = <T extends Linkable>(page: T, section: string) => {
     return page.link.startsWith(`${section}/`)
-}
+  }
 
-export const isSection = <T extends Linkable>(page: T, section: string): boolean => {
+  const isSection = <T extends Linkable>(page: T, section: string) => {
     return section.startsWith(`${page.link}/`)
+  }
+
+  return {
+    getLevel,
+    isLevel,
+    getChildren,
+    hasChildren,
+    getPeers,
+    inSection,
+    isSection,
+  }
 }
 
+export default createNavigationUtils
