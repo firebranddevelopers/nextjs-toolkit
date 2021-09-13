@@ -1,5 +1,5 @@
 import React from "react"
-import { useRouter } from "next/dist/client/router"
+import { NextRouter, useRouter } from "next/router"
 import createNavigationUtils from "./utils"
 import { PageInterface } from "./utils"
 import linkify from "../utils/linkify"
@@ -20,15 +20,14 @@ export interface NavState<T> {
 }
 
 interface Props<T extends PageInterface> {
+    router: NextRouter
     items: Array<T>
     children: (child: T, state: NavState<T>) => React.ReactNode
 }
 
-const Navigation = <T extends PageInterface>({ items, children }: Props<T>): React.ReactElement => {
-    const asPath = `foo`
-    console.log(useRouter())
+const Navigation = <T extends PageInterface>({ router, items, children }: Props<T>): React.ReactElement => {
+    const { asPath } = router
     const { isSection, hasChildren, getChildren } = createNavigationUtils<T>()
-
     const navItems = items.map((page, i) => {
         page.link = linkify(page.link)
         const current = page.link === asPath
