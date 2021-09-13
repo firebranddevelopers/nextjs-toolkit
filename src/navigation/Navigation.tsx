@@ -1,5 +1,5 @@
 import React from "react"
-import { NextRouter, useRouter } from "next/router"
+import { NextRouter } from "next/router"
 import createNavigationUtils from "./utils"
 import { PageInterface } from "./utils"
 import linkify from "../utils/linkify"
