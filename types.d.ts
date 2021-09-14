@@ -14,8 +14,7 @@ export interface ClientConfig {
   }
   
 export interface ProjectConfig {
-      elemental: {
-        enabled: boolean,
+      elemental?: {
         fragmentsPath: string
         componentsPath: string,
       }

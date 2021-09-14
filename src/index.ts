@@ -12,6 +12,7 @@ export { default as defaultPluraliser } from "./utils/pluraliser"
 export { default as resolveAncestry } from "./utils/resolveAncestry"
 export { default as getCacheKey } from "./utils/getCacheKey"
 export { initProject, requireProject, loadProject } from "./utils/project"
+export { default as defaultConfig } from "./config/defaultConfig"
 export {
   getFragments,
   getOperationName,
@@ -21,6 +22,7 @@ export {
   hasPageInfoField,
   hasTopLevelField,
   fragmentHasField,
+  getFragmentFields,
 } from "./utils/graphqlUtils"
 
 export { ProjectConfig, ProjectState, CacheManifest, ClientConfig } from "../types"

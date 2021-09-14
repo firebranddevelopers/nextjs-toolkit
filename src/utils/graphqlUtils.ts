@@ -1,4 +1,4 @@
-import { DefinitionNode, DocumentNode, FieldNode, FragmentSpreadNode, OperationDefinitionNode } from "graphql";
+import { DefinitionNode, DocumentNode, FieldNode, FragmentDefinitionNode, FragmentSpreadNode, OperationDefinitionNode } from "graphql";
 import { parse } from "graphql"
 
 export function getOperationName(doc: DocumentNode): string | null {
@@ -50,6 +50,21 @@ export function getQueryFields(query: string): string | null {
     return query.substring(start, end)
             .replace(new RegExp(`^${startToken.kind}`), ``)
             .replace(new RegExp(`${endToken.kind}$`), ``)
+}
+
+export function getFragmentFields(fragment: string): string | null {
+    const doc = parse(fragment)
+    const found = doc.definitions.find(def => def.kind === `FragmentDefinition`)
+    if (!found) {
+        return null
+    }
+    const fragmentNode = found as FragmentDefinitionNode
+    const loc = fragmentNode.selectionSet.loc
+    const { start, end, startToken, endToken } = loc!
+
+    return fragment.substring(start, end)
+        .replace(new RegExp(`^${startToken.kind}`), ``)
+        .replace(new RegExp(`${endToken.kind}$`), ``)
 }
 
 export function getFragments(query: string): string {
