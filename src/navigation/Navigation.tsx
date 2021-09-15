@@ -43,9 +43,14 @@ const Navigation = <T extends PageInterface>({ router, items, children }: Props<
             last: pos === items.length,
             // todo: not a great heuristic. Maybe get this from the API
             level: page.link.split(`/`).length,
-            key: page.id,
+            key: page.hashID ?? page.id,
             hasChildren: hasChildren(page),
             children: getChildren(page),
+        }
+        if (!state.key) {
+            console.warn(`
+Found a nav item with no key property defined. Did you forget to add id or hashID to your GrpahQL query?
+`)
         }
         return children(page, state)
     })

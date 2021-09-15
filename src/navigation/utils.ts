@@ -8,6 +8,7 @@ interface Connection<T> {
 
 export interface PageInterface {
   id: string
+  hashID: string
   title?: string | null
   link: string
   navChildren: Connection<this>
