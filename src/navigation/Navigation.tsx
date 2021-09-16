@@ -17,6 +17,7 @@ export interface NavState<T> {
     key: number | string
     hasChildren: boolean
     children: Array<T>
+    slug: string
 }
 
 interface Props<T extends PageInterface> {
@@ -46,6 +47,7 @@ const Navigation = <T extends PageInterface>({ router, items, children }: Props<
             key: page.hashID ?? page.id,
             hasChildren: hasChildren(page),
             children: getChildren(page),
+            slug: page.link.replace(/^\/|\/$/, ``)
         }
         if (!state.key) {
             console.warn(`
