@@ -35,6 +35,7 @@ export interface ProjectConfig {
 }
 
 export interface CacheManifest {
+  availableTemplates: StringMap
   templateManifest: TemplateManifest
   getPropsManifest: GetPropsManifest
   typeAncestry: TypeAncestryManifest
