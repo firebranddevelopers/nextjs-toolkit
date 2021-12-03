@@ -19,6 +19,7 @@ export {
   getQueryFields,
   getQueryName,
   getQueryNode,
+  getQueryNodes,
   hasPageInfoField,
   hasTopLevelField,
   fragmentHasField,

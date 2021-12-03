@@ -12,7 +12,7 @@ export function getOperationName(doc: DocumentNode): string | null {
     );
 }
 
-export function getQueryNode(doc: DocumentNode): FieldNode | null {
+export function getQueryNodes(doc: DocumentNode): Array<FieldNode> {
     const definitions =
         doc.definitions
         .filter(definition => (
@@ -21,16 +21,22 @@ export function getQueryNode(doc: DocumentNode): FieldNode | null {
             definition.operation === 'query'
         ))
     if (definitions.length !== 1) {
-        return null
+        return []
     }
     const def = definitions[0] as OperationDefinitionNode
     if (def.selectionSet.selections.length !== 1) {
-        return null
+        return []
     }
 
-    const query = def.selectionSet.selections[0] as FieldNode
+    const queries = def.selectionSet.selections as Array<FieldNode>
 
-    return query;
+    return queries;
+}
+
+export function getQueryNode(doc: DocumentNode): FieldNode | null {
+    const queries = getQueryNodes(doc)
+    
+    return queries[0] ?? null
 }
 
 
