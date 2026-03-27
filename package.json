@@ -5,7 +5,7 @@
   "main": "index.js",
   "types": "lib-es5/index.d.ts",
   "engines": {
-    "node": ">= 14"
+    "node": ">=22"
   },
   "scripts": {
     "build": "tsc && tsc -t ES5 --outDir lib-es5",
