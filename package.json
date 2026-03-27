@@ -2,8 +2,11 @@
   "name": "@silverstripe/nextjs-toolkit",
   "version": "0.1.8",
   "description": "Client-side for building NextJS websites powered by a Silverstripe CMS data source",
-  "main": "index.js",
-  "types": "lib-es5/index.d.ts",
+  "main": "lib-cjs/index.js",
+  "bin": {
+    "nextjs-builder": "./lib-cjs/bin/nextjs-builder.js"
+  },
+  "types": "lib-cjs/index.d.ts",
   "engines": {
     "node": ">=22"
   },
